@@ -1,203 +1,211 @@
-# Vector Pro Node.js SDK
+# Vector Pro SDK for Node.js
 
-A TypeScript SDK for the [Vector Pro](https://builtfast.com) API with zero runtime dependencies.
+Official Node.js SDK for the [Vector Pro API](https://builtfast.dev/api) by [BuiltFast](https://builtfast.dev).
 
-## Requirements
-
-- Node.js 18+ (for native `fetch()` support)
+[![npm version](https://img.shields.io/npm/v/vector-pro-sdk.svg)](https://www.npmjs.com/package/vector-pro-sdk)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Installation
 
 ```bash
-npm install @built-fast/vector-pro-sdk
+npm install vector-pro-sdk
 ```
 
-## Quick Start
+## Usage
 
 ```typescript
-import { VectorProClient, VectorProError } from '@built-fast/vector-pro-sdk';
+import { VectorProClient } from 'vector-pro-sdk';
 
-const client = new VectorProClient({ apiKey: 'your-api-key' });
+const client = new VectorProClient({
+  apiKey: 'your-api-key',
+});
 
 // List sites
-const { data: sites } = await client.getSites();
+const sites = await client.sites.list();
 
 // Create a site
-const site = await client.createSite({
-  partner_customer_id: 'cust-123',
+const site = await client.sites.create({
+  partner_customer_id: 'customer-123',
   dev_php_version: '8.3',
-  tags: ['wordpress'],
 });
 
-// Create an environment
-const environment = await client.createEnvironment(site.id, {
-  name: 'production',
-  php_version: '8.3',
-  is_production: true,
-  custom_domain: 'example.com',
+// Get a specific site
+const site = await client.sites.get('site-id');
+
+// Manage environments
+const envs = await client.environments.list('site-id');
+await client.environments.deploy('site-id', 'production');
+await client.environments.rollback('site-id', 'production');
+
+// Database operations
+await client.sites.db.createExport('site-id');
+await client.sites.db.importDirect('site-id', { dropTables: true });
+
+// WAF management
+await client.sites.waf.addBlockedIP('site-id', '1.2.3.4');
+await client.sites.waf.listRateLimits('site-id');
+
+// SSH keys
+await client.sites.sshKeys.add('site-id', {
+  name: 'my-key',
+  public_key: 'ssh-rsa ...',
 });
 
-// Deploy
-const deployment = await client.createDeployment(site.id, 'production');
-```
+// Account management
+const summary = await client.account.getSummary();
+await client.account.apiKeys.create({ name: 'ci-token' });
+await client.account.secrets.create({ key: 'MY_SECRET', value: 'secret-value' });
 
-## Error Handling
-
-```typescript
-import { VectorProClient, VectorProError } from '@built-fast/vector-pro-sdk';
-
-const client = new VectorProClient({ apiKey: 'your-api-key' });
-
-try {
-  await client.getSite('nonexistent');
-} catch (err) {
-  if (err instanceof VectorProError) {
-    if (err.isNotFoundError()) {
-      console.log('Site not found');
-    }
-    if (err.isValidationError()) {
-      console.log('Validation errors:', err.getValidationErrors());
-      console.log('First error:', err.firstError());
-    }
-    if (err.isAuthenticationError()) {
-      console.log('Invalid API key');
-    }
-  }
-}
+// Webhooks
+await client.webhooks.create({
+  url: 'https://example.com/webhook',
+  events: ['site.created', 'deployment.completed'],
+});
 ```
 
 ## API Reference
 
 ### Sites
 
-```typescript
-client.getSites(params?)              // List all sites
-client.getSite(siteId)                // Get a site
-client.createSite(data)               // Create a site
-client.updateSite(siteId, data)       // Update a site
-client.deleteSite(siteId)             // Delete a site
-client.suspendSite(siteId)            // Suspend a site
-client.unsuspendSite(siteId)          // Unsuspend a site
-client.resetSiteSftpPassword(siteId)  // Reset SFTP password
-client.resetSiteDatabasePassword(siteId) // Reset database password
-client.purgeSiteCache(siteId, data?)  // Purge CDN cache
-```
+- `client.sites.list(options?)` - List all sites
+- `client.sites.get(siteId)` - Get a site
+- `client.sites.create(data)` - Create a site
+- `client.sites.update(siteId, data)` - Update a site
+- `client.sites.delete(siteId)` - Delete a site
+- `client.sites.clone(siteId, data?)` - Clone a site
+- `client.sites.suspend(siteId)` - Suspend a site
+- `client.sites.unsuspend(siteId)` - Unsuspend a site
+- `client.sites.getLogs(siteId, options?)` - Get site logs
+- `client.sites.purgeCache(siteId, options?)` - Purge CDN cache
+
+### Sites - Database
+
+- `client.sites.db.importDirect(siteId, options?)` - Import SQL directly
+- `client.sites.db.createImportSession(siteId, data?)` - Create import session for large files
+- `client.sites.db.runImport(siteId, importId)` - Run a pending import
+- `client.sites.db.getImportStatus(siteId, importId)` - Get import status
+- `client.sites.db.createExport(siteId, options?)` - Create database export
+- `client.sites.db.getExportStatus(siteId, exportId)` - Get export status
+
+### Sites - WAF
+
+- `client.sites.waf.listAllowedReferrers(siteId)` - List allowed referrers
+- `client.sites.waf.addAllowedReferrer(siteId, hostname)` - Add allowed referrer
+- `client.sites.waf.removeAllowedReferrer(siteId, hostname)` - Remove allowed referrer
+- `client.sites.waf.listBlockedReferrers(siteId)` - List blocked referrers
+- `client.sites.waf.addBlockedReferrer(siteId, hostname)` - Add blocked referrer
+- `client.sites.waf.removeBlockedReferrer(siteId, hostname)` - Remove blocked referrer
+- `client.sites.waf.listBlockedIPs(siteId)` - List blocked IPs
+- `client.sites.waf.addBlockedIP(siteId, ip)` - Add blocked IP
+- `client.sites.waf.removeBlockedIP(siteId, ip)` - Remove blocked IP
+- `client.sites.waf.listRateLimits(siteId)` - List rate limits
+- `client.sites.waf.createRateLimit(siteId, data)` - Create rate limit
+- `client.sites.waf.getRateLimit(siteId, ruleId)` - Get rate limit
+- `client.sites.waf.updateRateLimit(siteId, ruleId, data)` - Update rate limit
+- `client.sites.waf.deleteRateLimit(siteId, ruleId)` - Delete rate limit
+
+### Sites - SSH Keys
+
+- `client.sites.sshKeys.list(siteId, options?)` - List SSH keys
+- `client.sites.sshKeys.add(siteId, data)` - Add SSH key
+- `client.sites.sshKeys.remove(siteId, keyId)` - Remove SSH key
+
+### Sites - SSL
+
+- `client.sites.ssl.getStatus(siteId, envId)` - Get SSL status
+- `client.sites.ssl.nudge(siteId, envId, options?)` - Nudge SSL provisioning
 
 ### Environments
 
-```typescript
-client.getEnvironments(siteId, params?)           // List environments
-client.getEnvironment(siteId, envName)            // Get an environment
-client.createEnvironment(siteId, data)            // Create an environment
-client.updateEnvironment(siteId, envName, data)   // Update an environment
-client.deleteEnvironment(siteId, envName)         // Delete an environment
-client.suspendEnvironment(siteId, envName)        // Suspend an environment
-client.unsuspendEnvironment(siteId, envName)      // Unsuspend an environment
-client.resetEnvironmentDatabasePassword(siteId, envName) // Reset database password
-```
+- `client.environments.list(siteId, options?)` - List environments
+- `client.environments.get(siteId, envId)` - Get an environment
+- `client.environments.create(siteId, data)` - Create an environment
+- `client.environments.update(siteId, envId, data)` - Update an environment
+- `client.environments.delete(siteId, envId)` - Delete an environment
+- `client.environments.deploy(siteId, envId)` - Deploy an environment
+- `client.environments.rollback(siteId, envId, targetDeploymentId?)` - Rollback deployment
+- `client.environments.resetDatabasePassword(siteId, envId)` - Reset database password
 
-### Deployments
+### Environments - Deployments
 
-```typescript
-client.getDeployments(siteId, envName, params?)        // List deployments
-client.getDeployment(siteId, envName, deploymentId)    // Get a deployment
-client.createDeployment(siteId, envName)               // Create a deployment
-client.rollbackDeployment(siteId, envName, data?)      // Rollback to a previous deployment
-```
+- `client.environments.deployments.list(siteId, envId, options?)` - List deployments
+- `client.environments.deployments.get(siteId, envId, deploymentId)` - Get deployment
 
-### SSL
+### Environments - Secrets
 
-```typescript
-client.getSslStatus(siteId, envName)     // Get SSL status
-client.nudgeSsl(siteId, envName, data?)  // Nudge SSL provisioning
-```
+- `client.environments.secrets.list(siteId, envId, options?)` - List secrets
+- `client.environments.secrets.create(siteId, envId, data)` - Create secret
+- `client.environments.secrets.get(siteId, envId, secretId)` - Get secret
+- `client.environments.secrets.update(siteId, envId, secretId, data)` - Update secret
+- `client.environments.secrets.delete(siteId, envId, secretId)` - Delete secret
 
-### Environment Secrets
+### Account
 
-```typescript
-client.getEnvironmentSecrets(siteId, envName, params?)         // List secrets
-client.createEnvironmentSecret(siteId, envName, data)          // Create a secret
-client.updateEnvironmentSecret(siteId, envName, secretId, data) // Update a secret
-client.deleteEnvironmentSecret(siteId, envName, secretId)      // Delete a secret
-```
-
-### Global Secrets
-
-```typescript
-client.getGlobalSecrets(params?)            // List global secrets
-client.createGlobalSecret(data)             // Create a global secret
-client.updateGlobalSecret(secretId, data)   // Update a global secret
-client.deleteGlobalSecret(secretId)         // Delete a global secret
-```
-
-### API Keys
-
-```typescript
-client.getApiKeys(params?)     // List API keys
-client.createApiKey(data)      // Create an API key
-client.deleteApiKey(tokenId)   // Delete an API key
-```
-
-### SSH Keys (Account)
-
-```typescript
-client.getSshKeys(params?)     // List account SSH keys
-client.getSshKey(sshKeyId)     // Get an SSH key
-client.createSshKey(data)      // Create an SSH key
-client.deleteSshKey(sshKeyId)  // Delete an SSH key
-```
-
-### SSH Keys (Site)
-
-```typescript
-client.getSiteSshKeys(siteId, params?)        // List site SSH keys
-client.addSiteSshKey(siteId, data)            // Add an SSH key to a site
-client.removeSiteSshKey(siteId, sshKeyId)     // Remove an SSH key from a site
-```
+- `client.account.getSummary()` - Get account summary
+- `client.account.sshKeys.list(options?)` - List account SSH keys
+- `client.account.sshKeys.create(data)` - Create SSH key
+- `client.account.sshKeys.get(keyId)` - Get SSH key
+- `client.account.sshKeys.delete(keyId)` - Delete SSH key
+- `client.account.apiKeys.list(options?)` - List API keys
+- `client.account.apiKeys.create(data)` - Create API key
+- `client.account.apiKeys.delete(tokenId)` - Delete API key
+- `client.account.secrets.list(options?)` - List global secrets
+- `client.account.secrets.create(data)` - Create global secret
+- `client.account.secrets.get(secretId)` - Get global secret
+- `client.account.secrets.update(secretId, data)` - Update global secret
+- `client.account.secrets.delete(secretId)` - Delete global secret
 
 ### Webhooks
 
+- `client.webhooks.list(options?)` - List webhooks
+- `client.webhooks.get(webhookId)` - Get a webhook
+- `client.webhooks.create(data)` - Create a webhook
+- `client.webhooks.update(webhookId, data)` - Update a webhook
+- `client.webhooks.delete(webhookId)` - Delete a webhook
+- `client.webhooks.rotateSecret(webhookId)` - Rotate webhook secret
+- `client.webhooks.listLogs(webhookId, options?)` - List webhook delivery logs
+
+### Events
+
+- `client.events.list(options?)` - List events
+
+### PHP Versions
+
+- `client.phpVersions.list()` - List available PHP versions
+
+## TypeScript
+
+Full TypeScript support with exported types for all API responses:
+
 ```typescript
-client.getWebhooks(params?)              // List webhooks
-client.getWebhook(webhookId)             // Get a webhook
-client.createWebhook(data)               // Create a webhook
-client.updateWebhook(webhookId, data)    // Update a webhook
-client.deleteWebhook(webhookId)          // Delete a webhook
-client.rotateWebhookSecret(webhookId)    // Rotate webhook secret
+import { VectorProClient } from 'vector-pro-sdk';
+import type { Site, Environment, ApiResponse, ListResponse } from 'vector-pro-sdk';
+
+const client = new VectorProClient({ apiKey: 'your-api-key' });
+
+// Responses are fully typed
+const sites: ListResponse<Site> = await client.sites.list();
+const site: ApiResponse<Site> = await client.sites.get('site-id');
+
+// Access typed data
+sites.data?.forEach(site => {
+  console.log(site.id, site.status);
+});
 ```
 
-### WAF
+## Error Handling
 
 ```typescript
-// Allowed Referrers
-client.getAllowedReferrers(siteId)               // List allowed referrers
-client.addAllowedReferrer(siteId, hostname)      // Add an allowed referrer
-client.removeAllowedReferrer(siteId, hostname)   // Remove an allowed referrer
+import { VectorProClient, VectorProApiError } from 'vector-pro-sdk';
 
-// Blocked Referrers
-client.getBlockedReferrers(siteId)               // List blocked referrers
-client.addBlockedReferrer(siteId, hostname)      // Add a blocked referrer
-client.removeBlockedReferrer(siteId, hostname)   // Remove a blocked referrer
-
-// Blocked IPs
-client.getBlockedIps(siteId)                     // List blocked IPs
-client.addBlockedIp(siteId, ip, note?)           // Block an IP
-client.removeBlockedIp(siteId, ip)               // Unblock an IP
-
-// Rate Limits
-client.getRateLimits(siteId)                     // List rate limits
-client.createRateLimit(siteId, data)             // Create a rate limit
-client.updateRateLimit(siteId, rateLimitId, data) // Update a rate limit
-client.deleteRateLimit(siteId, rateLimitId)      // Delete a rate limit
-```
-
-### Read-Only
-
-```typescript
-client.getPhpVersions()                   // List available PHP versions
-client.getEvents(params?)                 // List events
-client.getSiteLogs(siteId, params?)       // Get site logs
-client.getWebhookLogs(webhookId, params?) // Get webhook logs
+try {
+  await client.sites.get('invalid-id');
+} catch (error) {
+  if (error instanceof VectorProApiError) {
+    console.log(error.status);  // HTTP status code
+    console.log(error.body);    // Response body
+  }
+}
 ```
 
 ## Development
@@ -208,11 +216,8 @@ npm install
 
 # Build
 npm run build
-
-# Run tests
-npm test
 ```
 
 ## License
 
-MIT
+MIT - see [LICENSE](LICENSE) for details.

@@ -1,82 +1,29 @@
-// Main client
-export { VectorProClient } from './client.js';
-
-// Error handling
-export { VectorProError, type ApiErrorResponse } from './errors.js';
-
-// Types
+export { VectorProClient, VectorProApiError } from './client';
 export type {
-  // Client configuration
-  VectorProClientOptions,
-
-  // Pagination
-  PaginationParams,
-  PaginatedResponse,
-
-  // Sites
+  VectorProClientConfig,
+  PaginationOptions,
+  PaginationLinks,
+  PaginationMeta,
+  ApiResponse,
+  ListResponse,
   Site,
-  SiteStatus,
-  CreateSiteRequest,
-  UpdateSiteRequest,
-  PasswordResetResponse,
-
-  // Environments
+  SiteWithCredentials,
+  EnvironmentSummary,
   Environment,
-  EnvironmentStatus,
-  CreateEnvironmentRequest,
-  UpdateEnvironmentRequest,
-  EnvironmentPasswordResetResponse,
-
-  // Deployments
+  EnvironmentWithCredentials,
   Deployment,
-  DeploymentStatus,
-  RollbackDeploymentRequest,
-
-  // Secrets
   Secret,
-  CreateSecretRequest,
-  UpdateSecretRequest,
-
-  // API Keys
-  ApiKey,
-  CreateApiKeyRequest,
-
-  // SSH Keys
   SshKey,
-  CreateSshKeyRequest,
-
-  // Webhooks
+  ApiKey,
   Webhook,
-  WebhookType,
-  CreateWebhookRequest,
-  UpdateWebhookRequest,
   WebhookLog,
-
-  // WAF
-  AllowedReferrer,
-  BlockedReferrer,
-  BlockedIp,
-  RateLimit,
-  CreateRateLimitRequest,
-  UpdateRateLimitRequest,
-
-  // PHP Versions
-  PhpVersion,
-
-  // Events
   Event,
-
-  // Logs
-  LogColumn,
-  LogTable,
+  PhpVersion,
+  AccountSummary,
+  ReferrerEntry,
+  BlockedIpEntry,
+  RateLimit,
   LogsResponse,
-  GetLogsParams,
-
-  // SSL
-  SslStatus,
-  NudgeSslRequest,
-
-  // Cache
-  PurgeCacheRequest,
-  PurgeCacheResponse,
-} from './types.js';
+  DbImportSession,
+  DbExport,
+} from './client';
