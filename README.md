@@ -1,6 +1,11 @@
+<p align="center">
+    <img alt="BuiltFast Logo Light Mode" src="/assets/images/logo-light-mode.svg#gh-light-mode-only"/>
+    <img alt="BuiltFast Logo Dark Mode" src="/assets/images/logo-dark-mode.svg#gh-dark-mode-only"/>
+</p>
+
 # Vector Pro SDK for Node.js
 
-Official Node.js SDK for the [Vector Pro API](https://builtfast.dev/api) by [BuiltFast](https://builtfast.dev).
+Official Node.js SDK for [Vector Pro](https://builtfast.dev/api) by [BuiltFast](https://builtfast.com).
 
 [![npm version](https://img.shields.io/npm/v/vector-pro-sdk.svg)](https://www.npmjs.com/package/vector-pro-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
