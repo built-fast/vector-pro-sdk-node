@@ -662,13 +662,13 @@ class SitesApi {
   };
 
   ssl = {
-    getStatus: (siteId: string, envId: string): Promise<ApiResponse<Environment>> =>
-      this.client.request<ApiResponse<Environment>>({ path: `/api/v1/vector/sites/${siteId}/environments/${envId}/ssl` }),
+    getStatus: (envId: string): Promise<ApiResponse<Environment>> =>
+      this.client.request<ApiResponse<Environment>>({ path: `/api/v1/vector/environments/${envId}/ssl` }),
 
-    nudge: (siteId: string, envId: string, options?: { retry?: boolean }): Promise<ApiResponse<Environment>> =>
+    nudge: (envId: string, options?: { retry?: boolean }): Promise<ApiResponse<Environment>> =>
       this.client.request<ApiResponse<Environment>>({
         method: 'POST',
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/ssl/nudge`,
+        path: `/api/v1/vector/environments/${envId}/ssl/nudge`,
         body: options,
       }),
   };
@@ -684,8 +684,8 @@ class EnvironmentsApi {
     });
   }
 
-  get(siteId: string, envId: string): Promise<ApiResponse<Environment>> {
-    return this.client.request<ApiResponse<Environment>>({ path: `/api/v1/vector/sites/${siteId}/environments/${envId}` });
+  get(envId: string): Promise<ApiResponse<Environment>> {
+    return this.client.request<ApiResponse<Environment>>({ path: `/api/v1/vector/environments/${envId}` });
   }
 
   create(siteId: string, data: {
@@ -702,86 +702,86 @@ class EnvironmentsApi {
     });
   }
 
-  update(siteId: string, envId: string, data: { name?: string; custom_domain?: string | null; tags?: string[] }): Promise<ApiResponse<Environment>> {
+  update(envId: string, data: { name?: string; custom_domain?: string | null; tags?: string[] }): Promise<ApiResponse<Environment>> {
     return this.client.request<ApiResponse<Environment>>({
       method: 'PUT',
-      path: `/api/v1/vector/sites/${siteId}/environments/${envId}`,
+      path: `/api/v1/vector/environments/${envId}`,
       body: data,
     });
   }
 
-  delete(siteId: string, envId: string): Promise<ApiResponse<Environment>> {
+  delete(envId: string): Promise<ApiResponse<Environment>> {
     return this.client.request<ApiResponse<Environment>>({
       method: 'DELETE',
-      path: `/api/v1/vector/sites/${siteId}/environments/${envId}`,
+      path: `/api/v1/vector/environments/${envId}`,
     });
   }
 
-  deploy(siteId: string, envId: string): Promise<ApiResponse<Deployment>> {
+  deploy(envId: string): Promise<ApiResponse<Deployment>> {
     return this.client.request<ApiResponse<Deployment>>({
       method: 'POST',
-      path: `/api/v1/vector/sites/${siteId}/environments/${envId}/deployments`,
+      path: `/api/v1/vector/environments/${envId}/deployments`,
     });
   }
 
-  rollback(siteId: string, envId: string, targetDeploymentId?: string): Promise<ApiResponse<Deployment>> {
+  rollback(envId: string, targetDeploymentId?: string): Promise<ApiResponse<Deployment>> {
     return this.client.request<ApiResponse<Deployment>>({
       method: 'POST',
-      path: `/api/v1/vector/sites/${siteId}/environments/${envId}/rollback`,
+      path: `/api/v1/vector/environments/${envId}/rollback`,
       body: targetDeploymentId ? { target_deployment_id: targetDeploymentId } : undefined,
     });
   }
 
-  resetDatabasePassword(siteId: string, envId: string): Promise<ApiResponse<EnvironmentWithCredentials>> {
+  resetDatabasePassword(envId: string): Promise<ApiResponse<EnvironmentWithCredentials>> {
     return this.client.request<ApiResponse<EnvironmentWithCredentials>>({
       method: 'POST',
-      path: `/api/v1/vector/sites/${siteId}/environments/${envId}/database/reset-password`,
+      path: `/api/v1/vector/environments/${envId}/database/reset-password`,
     });
   }
 
   deployments = {
-    list: (siteId: string, envId: string, options?: PaginationOptions): Promise<ListResponse<Deployment>> =>
+    list: (envId: string, options?: PaginationOptions): Promise<ListResponse<Deployment>> =>
       this.client.request<ListResponse<Deployment>>({
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/deployments`,
+        path: `/api/v1/vector/environments/${envId}/deployments`,
         query: { per_page: options?.perPage, page: options?.page },
       }),
 
-    get: (siteId: string, envId: string, deploymentId: string): Promise<ApiResponse<Deployment>> =>
+    get: (deploymentId: string): Promise<ApiResponse<Deployment>> =>
       this.client.request<ApiResponse<Deployment>>({
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/deployments/${deploymentId}`,
+        path: `/api/v1/vector/deployments/${deploymentId}`,
       }),
   };
 
   secrets = {
-    list: (siteId: string, envId: string, options?: PaginationOptions): Promise<ListResponse<Secret>> =>
+    list: (envId: string, options?: PaginationOptions): Promise<ListResponse<Secret>> =>
       this.client.request<ListResponse<Secret>>({
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/secrets`,
+        path: `/api/v1/vector/environments/${envId}/secrets`,
         query: { per_page: options?.perPage, page: options?.page },
       }),
 
-    create: (siteId: string, envId: string, data: { key: string; value: string }): Promise<ApiResponse<Secret>> =>
+    create: (envId: string, data: { key: string; value: string }): Promise<ApiResponse<Secret>> =>
       this.client.request<ApiResponse<Secret>>({
         method: 'POST',
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/secrets`,
+        path: `/api/v1/vector/environments/${envId}/secrets`,
         body: data,
       }),
 
-    get: (siteId: string, envId: string, secretId: string): Promise<ApiResponse<Secret>> =>
+    get: (secretId: string): Promise<ApiResponse<Secret>> =>
       this.client.request<ApiResponse<Secret>>({
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/secrets/${secretId}`,
+        path: `/api/v1/vector/secrets/${secretId}`,
       }),
 
-    update: (siteId: string, envId: string, secretId: string, data: { key?: string; value?: string }): Promise<ApiResponse<Secret>> =>
+    update: (secretId: string, data: { key?: string; value?: string }): Promise<ApiResponse<Secret>> =>
       this.client.request<ApiResponse<Secret>>({
         method: 'PUT',
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/secrets/${secretId}`,
+        path: `/api/v1/vector/secrets/${secretId}`,
         body: data,
       }),
 
-    delete: (siteId: string, envId: string, secretId: string): Promise<ApiResponse<Secret>> =>
+    delete: (secretId: string): Promise<ApiResponse<Secret>> =>
       this.client.request<ApiResponse<Secret>>({
         method: 'DELETE',
-        path: `/api/v1/vector/sites/${siteId}/environments/${envId}/secrets/${secretId}`,
+        path: `/api/v1/vector/secrets/${secretId}`,
       }),
   };
 }
