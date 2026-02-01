@@ -39,8 +39,8 @@ const site = await client.sites.get('site-id');
 
 // Manage environments
 const envs = await client.environments.list('site-id');
-await client.environments.deploy('site-id', 'production');
-await client.environments.rollback('site-id', 'production');
+await client.environments.deploy('env-id');
+await client.environments.rollback('env-id');
 
 // Database operations
 await client.sites.db.createExport('site-id');
@@ -117,32 +117,32 @@ await client.webhooks.create({
 
 ### Sites - SSL
 
-- `client.sites.ssl.getStatus(siteId, envId)` - Get SSL status
-- `client.sites.ssl.nudge(siteId, envId, options?)` - Nudge SSL provisioning
+- `client.sites.ssl.getStatus(envId)` - Get SSL status
+- `client.sites.ssl.nudge(envId, options?)` - Nudge SSL provisioning
 
 ### Environments
 
 - `client.environments.list(siteId, options?)` - List environments
-- `client.environments.get(siteId, envId)` - Get an environment
+- `client.environments.get(envId)` - Get an environment
 - `client.environments.create(siteId, data)` - Create an environment
-- `client.environments.update(siteId, envId, data)` - Update an environment
-- `client.environments.delete(siteId, envId)` - Delete an environment
-- `client.environments.deploy(siteId, envId)` - Deploy an environment
-- `client.environments.rollback(siteId, envId, targetDeploymentId?)` - Rollback deployment
-- `client.environments.resetDatabasePassword(siteId, envId)` - Reset database password
+- `client.environments.update(envId, data)` - Update an environment
+- `client.environments.delete(envId)` - Delete an environment
+- `client.environments.deploy(envId)` - Deploy an environment
+- `client.environments.rollback(envId, targetDeploymentId?)` - Rollback deployment
+- `client.environments.resetDatabasePassword(envId)` - Reset database password
 
 ### Environments - Deployments
 
-- `client.environments.deployments.list(siteId, envId, options?)` - List deployments
-- `client.environments.deployments.get(siteId, envId, deploymentId)` - Get deployment
+- `client.environments.deployments.list(envId, options?)` - List deployments
+- `client.environments.deployments.get(deploymentId)` - Get deployment
 
 ### Environments - Secrets
 
-- `client.environments.secrets.list(siteId, envId, options?)` - List secrets
-- `client.environments.secrets.create(siteId, envId, data)` - Create secret
-- `client.environments.secrets.get(siteId, envId, secretId)` - Get secret
-- `client.environments.secrets.update(siteId, envId, secretId, data)` - Update secret
-- `client.environments.secrets.delete(siteId, envId, secretId)` - Delete secret
+- `client.environments.secrets.list(envId, options?)` - List secrets
+- `client.environments.secrets.create(envId, data)` - Create secret
+- `client.environments.secrets.get(secretId)` - Get secret
+- `client.environments.secrets.update(secretId, data)` - Update secret
+- `client.environments.secrets.delete(secretId)` - Delete secret
 
 ### Account
 
