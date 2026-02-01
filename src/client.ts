@@ -198,13 +198,16 @@ export interface WebhookLog {
 
 export interface Event {
   id?: string;
-  account_id?: number;
   event?: string;
   model_type?: string;
   model_id?: string;
   context?: string;
   occurred_at?: string;
   created_at?: string;
+  actor?: {
+    ip?: string;
+    token_name?: string;
+  };
 }
 
 export interface PhpVersion {
