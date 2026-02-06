@@ -7,19 +7,19 @@
 
 Official Node.js SDK for [Vector Pro](https://builtfast.dev/api) by [BuiltFast](https://builtfast.com).
 
-[![npm version](https://img.shields.io/npm/v/vector-pro-sdk.svg)](https://www.npmjs.com/package/vector-pro-sdk)
+[![npm version](https://img.shields.io/npm/v/@built-fast/vector-pro-sdk.svg)](https://www.npmjs.com/package/@built-fast/vector-pro-sdk)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Installation
 
 ```bash
-npm install vector-pro-sdk
+npm install @built-fast/vector-pro-sdk
 ```
 
 ## Usage
 
 ```typescript
-import { VectorProClient } from 'vector-pro-sdk';
+import { VectorProClient } from '@built-fast/vector-pro-sdk';
 
 const client = new VectorProClient({
   apiKey: 'your-api-key',
@@ -184,8 +184,8 @@ await client.webhooks.create({
 Full TypeScript support with exported types for all API responses:
 
 ```typescript
-import { VectorProClient } from 'vector-pro-sdk';
-import type { Site, Environment, ApiResponse, ListResponse } from 'vector-pro-sdk';
+import { VectorProClient } from '@built-fast/vector-pro-sdk';
+import type { Site, Environment, ApiResponse, ListResponse } from '@built-fast/vector-pro-sdk';
 
 const client = new VectorProClient({ apiKey: 'your-api-key' });
 
@@ -202,7 +202,7 @@ sites.data?.forEach(site => {
 ## Error Handling
 
 ```typescript
-import { VectorProClient, VectorProApiError } from 'vector-pro-sdk';
+import { VectorProClient, VectorProApiError } from '@built-fast/vector-pro-sdk';
 
 try {
   await client.sites.get('invalid-id');

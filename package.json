@@ -1,5 +1,5 @@
 {
-  "name": "vector-pro-sdk",
+  "name": "@built-fast/vector-pro-sdk",
   "version": "0.1.0",
   "description": "Node.js SDK for the Vector Pro API by BuiltFast",
   "homepage": "https://builtfast.dev/oss/vector-pro-sdk-node/",
