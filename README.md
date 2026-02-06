@@ -40,6 +40,7 @@ const site = await client.sites.get('site-id');
 // Manage environments
 const envs = await client.environments.list('site-id');
 await client.environments.deploy('env-id');
+await client.environments.deploy('env-id', { include_uploads: true });
 await client.environments.rollback('env-id');
 
 // Database operations
