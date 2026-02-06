@@ -128,7 +128,7 @@ await client.webhooks.create({
 - `client.environments.create(siteId, data)` - Create an environment
 - `client.environments.update(envId, data)` - Update an environment
 - `client.environments.delete(envId)` - Delete an environment
-- `client.environments.deploy(envId)` - Deploy an environment
+- `client.environments.deploy(envId, options?)` - Deploy an environment (options: `include_uploads`)
 - `client.environments.rollback(envId, targetDeploymentId?)` - Rollback deployment
 - `client.environments.resetDatabasePassword(envId)` - Reset database password
 
