@@ -717,10 +717,11 @@ class EnvironmentsApi {
     });
   }
 
-  deploy(envId: string): Promise<ApiResponse<Deployment>> {
+  deploy(envId: string, options?: { include_uploads?: boolean }): Promise<ApiResponse<Deployment>> {
     return this.client.request<ApiResponse<Deployment>>({
       method: 'POST',
       path: `/api/v1/vector/environments/${envId}/deployments`,
+      body: options,
     });
   }
 
